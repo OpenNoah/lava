@@ -19,7 +19,7 @@ public:
     // To be called from GUI thread
     void terminate();
     QImage fb();
-	void set_colours(QRgb fg, QRgb bg);
+    void set_colours(QRgb fg, QRgb bg);
     void keyPress(QKeyEvent *e);
     void keyRelease(QKeyEvent *e);
 

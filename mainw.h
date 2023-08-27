@@ -5,16 +5,16 @@
 
 class MainW: public QMainWindow
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	MainW(QWidget *parent = 0);
+    MainW(QWidget *parent = 0);
 
 public slots:
-	void fullscreen();
-	void exit_fullscreen();
-	void switch_colour();
+    void fullscreen();
+    void exit_fullscreen();
+    void switch_colour();
 
 private:
-	LavaWidget *lavaw;
+    LavaWidget *lavaw;
 };

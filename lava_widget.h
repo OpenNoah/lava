@@ -6,24 +6,24 @@ class LavaThread;
 
 class LavaWidget: public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	LavaWidget(QWidget *parent = 0);
-	~LavaWidget();
+    LavaWidget(QWidget *parent = 0);
+    ~LavaWidget();
 
-	void set_colours(QColor fg, QColor bg);
+    void set_colours(QColor fg, QColor bg);
 
 signals:
-	void touched();
+    void touched();
 
 protected:
-	virtual void customEvent(QCustomEvent *e);
-	virtual void keyPressEvent(QKeyEvent *e);
-	virtual void keyReleaseEvent(QKeyEvent *e);
-	virtual void mouseReleaseEvent(QMouseEvent *e);
-	virtual void paintEvent(QPaintEvent *e);
+    virtual void customEvent(QCustomEvent *e);
+    virtual void keyPressEvent(QKeyEvent *e);
+    virtual void keyReleaseEvent(QKeyEvent *e);
+    virtual void mouseReleaseEvent(QMouseEvent *e);
+    virtual void paintEvent(QPaintEvent *e);
 
 private:
-	LavaThread *th_lava;
+    LavaThread *th_lava;
 };

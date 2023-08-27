@@ -3,14 +3,14 @@
 
 int main(int argc, char *argv[])
 {
-	QApplication a(argc, argv);
+    QApplication a(argc, argv);
 
-	// Set default configurations
-	a.setFont(QFont("noah", 16));
-	a.setDefaultCodec(QTextCodec::codecForName("UTF8"));
+    // Set default configurations
+    a.setFont(QFont("noah", 16));
+    a.setDefaultCodec(QTextCodec::codecForName("UTF8"));
 
-	MainW mw;
-	a.setMainWidget(&mw);
-	mw.showMaximized();
-	return a.exec();
+    MainW mw;
+    a.setMainWidget(&mw);
+    mw.showMaximized();
+    return a.exec();
 };
