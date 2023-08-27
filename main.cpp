@@ -11,6 +11,6 @@ int main(int argc, char *argv[])
 
 	MainW mw;
 	a.setMainWidget(&mw);
-	mw.showFullScreen();
+	mw.showMaximized();
 	return a.exec();
 };

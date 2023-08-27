@@ -1,45 +1,45 @@
-SRC	:= main.cpp mainw.cpp cgucontrol.cpp regs.cpp bootdialog.cpp boot.cpp options.cpp \
-	   backup.cpp backup_nanddump.cpp backup_eraseall.cpp backup_nandwrite.cpp lcd_fix.cpp
-HDR	:= mainw.h cgucontrol.h regs.h bootdialog.h boot.h options.h backup.h
-TRG	:= syssw
+SRC	:= main.cpp mainw.cpp lava_thread.cpp lava_widget.cpp
+SRCC	:= FindDoctor.c
+HDR	:= mainw.h lava_widget.h
+TRG	:= lava_qt2
 
 MOC_SRC	:= $(HDR:%.h=moc_%.cpp)
 SRC	+= $(MOC_SRC)
 
-TOP	?= $(CURDIR)/../../build/qt-2.3.10-mt
+TOP	?= $(CURDIR)/../build/qt-2.3.10-mt
 INC	+= -I$(TOP)/include -I$(TOP)/src/3rdparty/freetype/include
-LIB	+= -L$(TOP)/lib -Wl,-rpath,/opt/qt-2.3.10/lib -lqte
-DEF	+= -DQWS -D_REENTRANT
+LIB	+= -L$(TOP)/lib -Wl,-rpath,/opt/qt-2.3.10/lib -lqte-mt
+DEF	+= -D_REENTRANT -DQWS -DQT_THREAD_SUPPORT
 CFLAGS	:= -Os -pipe -D_FILE_OFFSET_BITS=64
 FLAGS	?= -Os -pipe -fno-rtti -D_FILE_OFFSET_BITS=64
 CROSS	?= mipsel-linux-
-MOC	?= ../../bin/moc
+MOC	?= ../bin/moc
 
 .PHONY: all
 all: $(TRG)
 
 .PHONY: send
 send: $(TRG)
-	-cat $(TRG) | ncat np1380 1234 --send-only
+	-cat $(TRG) | ncat np1000 1234 --send-only
 
-$(TRG): $(SRC:%.cpp=%.o)
+$(TRG): $(SRC:%.cpp=%.o) $(SRCC:%.c=%.o)
 	$(CROSS)g++ -s -o $@ $^ $(LIB) $(FLAGS)
-
-nanddump nandwrite flash_eraseall: %: %.c crc32.c
-	$(CROSS)gcc -s -o $@ $^ $(CFLAGS)
 
 %.o: %.cpp
 	$(CROSS)g++ -o $@ -c $(INC) $^ $(DEF) $(FLAGS)
+
+%.o: %.c
+	$(CROSS)gcc -o $@ -c $(INC) $^ $(DEF) $(CFLAGS)
 
 moc_%.cpp: %.h
 	$(MOC) -o $@ $<
 
 .PHONY: clean
 clean:
-	rm -f $(TRG) $(SRC:%.cpp=%.o) $(MOC_SRC)
+	rm -f $(TRG) $(SRC:%.cpp=%.o) $(SRCC:%.c=%.o) $(MOC_SRC)
 
 .PHONY: gdb
 gdb: $(TRG)
 	mipsel-linux-gdb $(TRG) \
-		-ex 'target extended-remote NP1380:1234' \
+		-ex 'target extended-remote np1000:1234' \
 		-ex 'set sysroot $(TOP)/rootfs'

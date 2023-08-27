@@ -1,7 +1,8 @@
-syssw
+lava_qt2
 *.o
 moc_*.cpp
 nanddump
 nandwrite
 nandwrite_mlc
 flash_eraseall
+.vscode/

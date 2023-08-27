@@ -1,28 +1,41 @@
-#include <stdlib.h>
 #include "mainw.h"
-#include "cgucontrol.h"
-#include "regs.h"
-#include "boot.h"
-#include "bootdialog.h"
-#include "options.h"
-#include "backup.h"
 
 MainW::MainW(QWidget *parent) : QMainWindow(parent, 0, Qt::WStyle_Customize | Qt::WStyle_NoBorderEx)
 {
-	QTabWidget *tab = new QTabWidget(this);
-	setCentralWidget(tab);
+	setCaption("Lava Qt2");
 
-	BootDialog::init();
-	tab->addTab(new Boot(this), tr("启动项"));
+	setCentralWidget(lavaw = new LavaWidget(this));
 
-	Regs *regs = new Regs(this);
-	if (regs->init())
-		tab->addTab(new CGUControl(this), tr("时钟频率"));
+	QMenuBar *menu = menuBar();
+	int mitem;
+	//mitem = menu->insertItem(tr("切换颜色"));
+	//menu->connectItem(mitem, this, SLOT(switch_colour()));
+	mitem = menu->insertItem(tr("全屏显示"));
+	menu->connectItem(mitem, this, SLOT(fullscreen()));
+	mitem = menu->insertItem(tr("退出程序"));
+	menu->connectItem(mitem, this, SLOT(close()));
 
-	Backup *bkp = new Backup(this);
-	tab->addTab(bkp, tr("备份/恢复"));
+	connect(lavaw, SIGNAL(touched()), this, SLOT(fullscreen()));
+}
 
-	tab->addTab(new Options(this), tr("选项"));
+void MainW::fullscreen()
+{
+	lavaw->setBackgroundColor(Qt::black);
+	lavaw->reparent(0, Qt::WStyle_Customize | Qt::WStyle_NoBorderEx, QPoint(0, 0), false);
+	lavaw->showFullScreen();
+	disconnect(lavaw, SIGNAL(touched()), this, SLOT(fullscreen()));
+	connect(lavaw, SIGNAL(touched()), this, SLOT(exit_fullscreen()));
+}
 
-	connect(bkp, SIGNAL(enabled(bool)), this, SLOT(setEnabled(bool)));
+void MainW::exit_fullscreen()
+{
+	lavaw->setBackgroundColor(backgroundColor());
+	setCentralWidget(lavaw);
+	disconnect(lavaw, SIGNAL(touched()), this, SLOT(exit_fullscreen()));
+	connect(lavaw, SIGNAL(touched()), this, SLOT(fullscreen()));
+}
+
+void MainW::switch_colour()
+{
+	lavaw->set_colours(Qt::green, Qt::black);
 }
